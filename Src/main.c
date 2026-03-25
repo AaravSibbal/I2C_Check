@@ -57,7 +57,6 @@
 #define SYSTICK_LOAD (*(volatile uint32_t *) (SYSTICK_BASE + 0x04))
 #define SYSTICK_VAL (*(volatile uint32_t *) (SYSTICK_BASE + 0x08))
 
-void init_DAC();
 
 void turn_green_on(){
     GPIOD_ODR |= (1<<12);
@@ -159,9 +158,9 @@ void delay_ms(uint32_t ms){
     // Enable the clock
     SYSTICK_CTRL |= (1<<0);
 
-    for(int i=0; i<ms; i++){
+    for(uint32_t i=0; i<ms; i++){
         // loop till the clock cycle is done 1ms
-        while(SYSTICK_CTRL & (1<<16) == 0){
+        while((SYSTICK_CTRL & (1<<16)) == 0){
                
         }
     }
@@ -201,14 +200,8 @@ void ping_audio_chip(){
     turn_green_off();
 }
 
+void init_audio_chip(){
 
-void init_DAC(){
-    // clear pin 4
-    GPIOD_MODER &= ~(3<<8);
-    // set it to ouput mode for pin 4
-    GPIOD_MODER |= (1<<8);
-    // turn on the output
-    GPIOD_ODR |= (1<<4);
 }
 
 int main(void) {
@@ -216,8 +209,6 @@ int main(void) {
     init_GPIOD();
     init_GPIOB();
     init_I2C1();
-    init_DAC();
-
-    ping_audio_chip();
+    init_audio_chip();
 
 }
