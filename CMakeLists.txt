@@ -21,7 +21,7 @@
 #
 
 # Core project settings
-project("I2C_Check")
+project("I2C_check")
 enable_language(C CXX ASM)
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
@@ -43,6 +43,7 @@ set(cpu_PARAMS
 # Sources
 set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/gpio.c
 )
 
 # Include directories for all compilers
