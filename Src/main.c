@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "Src/gpio.h"
 #include "gpio.h"
 
 // reset and clock control (RCC) Clock control register
@@ -47,11 +48,9 @@ void turn_red_on(){
     GPIO_set_odr(GPIOD, GPIO_PIN_14, GPIO_OUTPUT_HIGH);
 }
 void turn_green_off(){
-    GPIOD_ODR &= ~(1<<12);
     GPIO_set_odr(GPIOD, GPIO_PIN_12, GPIO_OUTPUT_LOW);
 }
 void turn_red_off(){
-    GPIOD_ODR &= ~(1<<14);
     GPIO_set_odr(GPIOD, GPIO_PIN_14, GPIO_OUTPUT_LOW);
 }
 
@@ -112,8 +111,7 @@ void init_I2C1(){
 }
 
 void write_to_I2C_DR(uint32_t addr){
-    I2C_DR &= ~(255<<0);
-    I2C_DR |= (addr << 0);
+    I2C_DR = addr;
 }
 
 void clear_I2C_ADDR(){
@@ -175,7 +173,8 @@ void ping_audio_chip(){
 }
 
 void init_audio_chip(){
-
+    GPIO_set_moder(GPIOD, GPIO_PIN_4, GPIO_MODE_OUTPUT);
+    GPIO_set_odr(GPIOD, GPIO_PIN_4, GPIO_OUTPUT_HIGH);
 }
 
 int main(void) {
@@ -184,5 +183,10 @@ int main(void) {
     init_GPIOB();
     init_I2C1();
     init_audio_chip();
+    delay_ms(1);
 
+    while(1){
+        ping_audio_chip();
+        delay_ms(100);
+    }
 }

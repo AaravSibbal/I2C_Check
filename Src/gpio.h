@@ -54,8 +54,8 @@ typedef enum GPIO_BSSR_action {
 }GPIO_BSSR_action_t;
 
 typedef struct BSSR{
-    BSSR_bit_t bit_type;
-    BSSR_action_t action;
+    GPIO_BSSR_bit_t bit_type;
+    GPIO_BSSR_action_t action;
 }GPIO_BSSR_t;
 
 typedef enum GPIO_Pin {
