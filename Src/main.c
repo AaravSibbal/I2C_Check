@@ -1,10 +1,9 @@
 #include <stdint.h>
 #include "Src/gpio.h"
 #include "gpio.h"
+#include "rcc.h"
 
 // reset and clock control (RCC) Clock control register
-#define RCC_BASE (0x40023800)
-#define RCC_CCR (*(volatile uint32_t *) (RCC_BASE + 0x00))
 // AHB1 enable register 
 // GPIOD enables with bit 3
 // GPIOA enables with bit 1
@@ -55,12 +54,11 @@ void turn_red_off(){
 }
 
 void GPIOx_clock_on(){
-    RCC_AHB1ENR |= (1<<3);
-    RCC_AHB1ENR |= (1<<1);
+    RCC_AHB1_ENR |= ((RCC_AHB1_GPIOD_EN) | (RCC_AHB1_GPIOB_EN));
 }
 
 void I2C_clock_on(){
-    RCC_ABP1ENR |= (1<<21);
+    RCC_APB1_ENR |= RCC_APB1_I2C_EN;
 }
 
 void init_clock_on(){
