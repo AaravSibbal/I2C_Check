@@ -52,17 +52,18 @@ GPIO_AFx_t alt_func_val,  uint32_t clock_speed_MHz, uint32_t i2c_freq){
     I2C_set_freq_bits(I2C_ENGINE, clock_speed_MHz);
     I2C_set_CCR(I2C_ENGINE, ccr_val);
     I2C_set_TRISE(I2C_ENGINE, trise_val);
-    I2C_ENGINE->I2C_CR1 |= I2C_CR1_ACK_EN
+    I2C_ENGINE->I2C_CR1 |= I2C_CR1_ACK_EN;
     // turn on the engine
     I2C_enable_engine(I2C_ENGINE);
 }
 
-static i2c_wait_start(){
+static int i2c_wait_start(){
     while (1){
         if(I2C_ENGINE->I2C_SR1 & (I2C_SR1_SB_FLAG)){
             return TRUE;
         }
     }
+    return FALSE;
 }
 
 /**
@@ -108,7 +109,7 @@ int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value){
             break;
         }
         else if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
-            return FALSEl
+            return FALSE;
         }
     }
     I2C_ENGINE->I2C_DR = reg_addr;

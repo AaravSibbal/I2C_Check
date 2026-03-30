@@ -38,15 +38,6 @@ void init_GPIOD(){
     GPIO_set_moder(GPIOD, GPIO_PIN_14, GPIO_MODE_OUTPUT);
 }
 
-void write_to_I2C_DR(uint32_t addr){
-    I2C_DR = addr;
-}
-
-void clear_I2C_ADDR(){
-    uint32_t dummy_read;
-    dummy_read = I2C_SR1;
-    dummy_read = I2C_SR2;
-}
 
 void delay_ms(uint32_t ms){
     SYSTICK_LOAD = (16000-1);
@@ -82,10 +73,5 @@ int main(void) {
     init_clock_on();
     init_GPIOD();
     init_audio_chip();
-    delay_ms(1);
-
-    while(1){
-        ping_audio_chip();
-        delay_ms(100);
-    }
+    
 }

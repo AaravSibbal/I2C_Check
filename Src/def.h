@@ -3,8 +3,11 @@
 
 #include <stdint.h>
 
-#define __IO (volatile)
-#define CREATE_ADDRESS(base, offset) (*(__IO uint32_t *)((base) + (offset)))
+#ifndef __IO
+#define __IO volatile 
+#endif
+
+#define CREATE_ADDRESS(base, offset) 
 #define TRUE 1
 #define FALSE 0
 

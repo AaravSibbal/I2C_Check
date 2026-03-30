@@ -44,6 +44,10 @@ set(cpu_PARAMS
 set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/gpio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/i2c.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/i2c.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/gpio.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/rcc.h
 )
 
 # Include directories for all compilers

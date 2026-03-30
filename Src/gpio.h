@@ -64,7 +64,7 @@ typedef enum GPIO_Pin {
 
 }GPIO_Pin_t;
 
-typedef struct{
+typedef struct gpio_struct{
     __IO uint32_t MODER;
     __IO uint32_t OTYPER;
     __IO uint32_t GPIO_OSPEEDR;
