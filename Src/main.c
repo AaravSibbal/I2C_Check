@@ -3,14 +3,7 @@
 #include "gpio.h"
 #include "rcc.h"
 
-// reset and clock control (RCC) Clock control register
-// AHB1 enable register 
-// GPIOD enables with bit 3
-// GPIOA enables with bit 1
-#define RCC_AHB1ENR (*(volatile uint32_t *) (RCC_BASE + 0x30))
-// RCC ABP1 Enable register
 // i2c1 is bit 21
-#define RCC_ABP1ENR (*(volatile uint32_t *) (RCC_BASE + 0x40))
 /**
  * I2C definitions
  */
@@ -172,7 +165,10 @@ void ping_audio_chip(){
 
 void init_audio_chip(){
     GPIO_set_moder(GPIOD, GPIO_PIN_4, GPIO_MODE_OUTPUT);
-    GPIO_set_odr(GPIOD, GPIO_PIN_4, GPIO_OUTPUT_HIGH);
+    GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_RESET);
+    delay_ms(1);
+    GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_SET);
+
 }
 
 int main(void) {

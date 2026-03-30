@@ -17,6 +17,6 @@
 #define GPIOD_BIT 3
 #define RCC_AHB1_GPIOB_EN (1<<GPIOB_BIT)
 #define RCC_AHB1_GPIOD_EN (1<<GPIOD_BIT)
-#define RCC_APB1_I2C_EN (1<<I2C1_BIT)
+#define RCC_APB1_I2C1_EN (1<<I2C1_BIT)
 
 #endif

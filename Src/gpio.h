@@ -44,21 +44,6 @@ typedef enum GPIO_AFx {
     AF15
 }GPIO_AFx_t;
 
-typedef enum GPIO_BSSR_bit {
-    BSSR_RESET = 0,
-    BSSR_SET = 1
-}GPIO_BSSR_bit_t;
-
-typedef enum GPIO_BSSR_action {
-    BSSR_NO_ACTION = 0,
-    BSSR_TAKE_ACTION
-}GPIO_BSSR_action_t;
-
-typedef struct BSSR{
-    GPIO_BSSR_bit_t bit_type;
-    GPIO_BSSR_action_t action;
-}GPIO_BSSR_t;
-
 typedef enum GPIO_Pin {
     GPIO_PIN_0 = 0,
     GPIO_PIN_1,
@@ -79,7 +64,7 @@ typedef enum GPIO_Pin {
 
 }GPIO_Pin_t;
 
-typedef struct GPIO{
+typedef struct{
     __IO uint32_t MODER;
     __IO uint32_t OTYPER;
     __IO uint32_t GPIO_OSPEEDR;
@@ -91,6 +76,11 @@ typedef struct GPIO{
     __IO uint32_t AFR[2];
 } GPIO_t;
 
+typedef enum BSSR_value{
+    BSSR_RESET = 0,
+    BSSR_SET
+}BSSR_value_t;
+
 #define GPIOB ((GPIO_t *) GPIOB_BASE)
 #define GPIOD ((GPIO_t *) GPIOD_BASE)
 
@@ -98,6 +88,7 @@ void GPIO_set_moder(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_MODER_t mode);
 void GPIO_set_otyper(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_OTYPER_t type);
 void GPIO_set_odr(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_ODR_t output);
 void GPIO_set_alt_func(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_AFx_t function);
+void GPIO_set_bssr(GPIO_t* gpio, GPIO_Pin_t pin, BSSR_value_t);
 
 
 #endif

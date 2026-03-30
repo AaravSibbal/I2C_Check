@@ -2,7 +2,7 @@
 
 
 void turn_GPIOx_clock_on(){
-    
+
 }
 
 void GPIO_set_moder(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_MODER_t mode){
@@ -29,4 +29,12 @@ void GPIO_set_alt_func(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_AFx_t function){
     pin = pin - 8;
     gpio->AFR[1] &= ~(15<<(pin*4));
     gpio->AFR[1] |= (function<<(pin*4));
+}
+
+void GPIO_set_bssr(GPIO_t* gpio, GPIO_Pin_t pin, BSSR_value_t val){
+    if(val == BSSR_SET){
+        gpio->BSSR |= (1<<pin);
+        return;
+    }
+    gpio->BSSR |= (1<<(pin+16));
 }
