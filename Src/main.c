@@ -75,7 +75,7 @@ void init_audio_chip(){
     GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_RESET);
     delay_ms(1);
     GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_SET);
-
+    
 }
 
 int main(void) {

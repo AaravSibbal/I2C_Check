@@ -52,7 +52,7 @@ GPIO_AFx_t alt_func_val,  uint32_t clock_speed_MHz, uint32_t i2c_freq){
     I2C_set_freq_bits(I2C_ENGINE, clock_speed_MHz);
     I2C_set_CCR(I2C_ENGINE, ccr_val);
     I2C_set_TRISE(I2C_ENGINE, trise_val);
-    I2C_ENGINE->I2C_CR1 |=
+    I2C_ENGINE->I2C_CR1 |= I2C_CR1_ACK_EN
     // turn on the engine
     I2C_enable_engine(I2C_ENGINE);
 }
@@ -93,7 +93,7 @@ static int I2C_start_talking(uint8_t peripheral_addr){
         return FALSE;
     }
     I2C_clear_ADDR();
-    return TRUE
+    return TRUE;
 }
 
 
@@ -105,15 +105,19 @@ int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value){
     }
     while(1){
         if(I2C_ENGINE->I2C_SR1 & (I2C_SR1_TXE_FLAG)){
-            // the data regester is empty
             break;
+        }
+        else if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSEl
         }
     }
     I2C_ENGINE->I2C_DR = reg_addr;
     while(1){
         if(I2C_ENGINE->I2C_SR1 & (I2C_SR1_TXE_FLAG)){
-            // the data regester is empty
             break;
+        }
+        else if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
         }
     }
     I2C_ENGINE->I2C_DR = value;
@@ -121,6 +125,9 @@ int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value){
         if(I2C_ENGINE->I2C_SR1 & (I2C_SR1_BTF_FLAG)){
             // data transfor this done
             break;
+        }
+        else if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
         }
     } 
 
@@ -130,7 +137,47 @@ int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value){
 int I2C_read_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t *read_val){
     int error = I2C_start_talking(peri_addr);
     if(error == FALSE){
-        return FALSE
+        return FALSE;
     }
+    
+    I2C_ENGINE->I2C_DR = reg_addr;
+    while(1){
+        if(I2C_ENGINE->I2C_SR1 & I2C_SR1_BTF_FLAG){
+            break;
+        }
+        else if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
+        }
+    }
+
+    I2C_ENGINE->I2C_CR1 |= I2C_START_GENERATION;
+    while(!(I2C_ENGINE->I2C_SR1 & (I2C_SR1_SB_FLAG))){
+        if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
+        }
+    }
+    
+    I2C_ENGINE->I2C_DR = peri_addr + 1;
+    while(!(I2C_ENGINE->I2C_SR1 & I2C_SR1_ADDR_FLAG)){
+        if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
+        }
+    }
+    
+    I2C_ENGINE->I2C_CR1 &= ~I2C_CR1_ACK_EN;
+    I2C_ENGINE->I2C_CR1 |= I2C_STOP_GENERATION;
+
+    I2C_clear_ADDR();
+    while(!(I2C_ENGINE->I2C_SR1 & I2C_SR1_RXE_FLAG)){
+        if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
+            return FALSE;
+        }
+    }
+
+    *read_val = I2C_ENGINE->I2C_DR;
+
+    I2C_ENGINE->I2C_CR1 |= I2C_CR1_ACK_EN;
+
+    return TRUE;
 
 }

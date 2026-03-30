@@ -7,13 +7,13 @@
 
 #define I2C_BASE (0x40005400)
 #define I2C_START_GENERATION (1<<8)
-#define I2C_NACK_EN_R (1<<10)
 
 #define I2C_SR1_AF_FLAG (1<<10)
 #define I2C_SR1_SB_FLAG (1<<0) 
 #define I2C_SR1_ADDR_FLAG (1<<1)
 #define I2C_SR1_TXE_FLAG (1<<7)
-#define I2C_SR1_BTF_FLAG (1<<0)
+#define I2C_SR1_BTF_FLAG (1<<2)
+#define I2C_SR1_RXE_FLAG (1<<6)
 
 #define I2C_CR1_ACK_EN (1<<10)
 #define I2C_STOP_GENERATION (1<<9)
