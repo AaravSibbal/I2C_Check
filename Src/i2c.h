@@ -6,7 +6,19 @@
 #include "gpio.h"
 
 #define I2C_BASE (0x40005400)
+#define I2C_START_GENERATION (1<<8)
+#define I2C_NACK_EN_R (1<<10)
 
+#define I2C_SR1_AF_FLAG (1<<10)
+#define I2C_SR1_SB_FLAG (1<<0) 
+#define I2C_SR1_ADDR_FLAG (1<<1)
+#define I2C_SR1_TXE_FLAG (1<<7)
+#define I2C_SR1_BTF_FLAG (1<<0)
+
+#define I2C_CR1_ACK_EN (1<<10)
+#define I2C_STOP_GENERATION (1<<9)
+#define ACK 1
+#define NACK 0
 
 typedef struct I2C{
     __IO uint32_t I2C_CR1;
@@ -26,9 +38,7 @@ typedef struct I2C{
 // talk through i2c
 void I2C_init_engine(GPIO_t *GPIO, GPIO_Pin_t scl_pin, GPIO_Pin_t sda_pin, 
 GPIO_AFx_t alt_func_val,  uint32_t clock_speed_MHz, uint32_t i2c_freq);
-void I2C_start_talking(uint32_t peripheral_addr);
-void I2C_write_reg(uint32_t reg_addr, uint32_t value);
-void I2C_stop_talking();
-void I2C_read();
+int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value);
+int I2C_read_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t *read_val);
 
 #endif

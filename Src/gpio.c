@@ -1,10 +1,5 @@
 #include "gpio.h"
 
-
-void turn_GPIOx_clock_on(){
-
-}
-
 void GPIO_set_moder(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_MODER_t mode){
     gpio->MODER &= ~(3 << (2*pin));
     gpio->MODER |= (mode <<(2*pin));
