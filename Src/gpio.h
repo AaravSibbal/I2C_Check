@@ -81,6 +81,12 @@ typedef enum BSSR_value{
     BSSR_SET
 }BSSR_value_t;
 
+typedef enum PUPDR_val{
+    NO_PUPD = 0,
+    PULL_UP,
+    PULL_DOWN
+}PUPDR_t;
+
 #define GPIOB ((GPIO_t *) GPIOB_BASE)
 #define GPIOD ((GPIO_t *) GPIOD_BASE)
 
@@ -89,6 +95,7 @@ void GPIO_set_otyper(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_OTYPER_t type);
 void GPIO_set_odr(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_ODR_t output);
 void GPIO_set_alt_func(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_AFx_t function);
 void GPIO_set_bssr(GPIO_t* gpio, GPIO_Pin_t pin, BSSR_value_t);
+void GPIO_set_pupdr(GPIO_t *gpio, GPIO_Pin_t pin, PUPDR_t val);
 
 
 #endif

@@ -4,4 +4,8 @@ CompileFlags:
     - '-Wno-implicit-int'
   CompilationDatabase: build/Debug
 Diagnostics:
-  Suppress: null
+  Suppress:
+    - unused-includes
+    - unknown_typename
+    - unknown_typename_suggest
+    - typename_requires_specqual

@@ -33,3 +33,8 @@ void GPIO_set_bssr(GPIO_t* gpio, GPIO_Pin_t pin, BSSR_value_t val){
     }
     gpio->BSSR |= (1<<(pin+16));
 }
+
+void GPIO_set_pupdr(GPIO_t *gpio, GPIO_Pin_t pin, PUPDR_t val){
+    gpio->GPIO_PUPDR &= ~(3<<(pin*2));
+    gpio->GPIO_PUPDR |= (val<<(pin*2));
+}

@@ -1,7 +1,6 @@
 #include "i2c.h"
 #include "def.h"
 #include "gpio.h"
-#include "rcc.h"
 
 
 static void I2C_set_freq_bits(I2C_t *I2C, uint32_t clock_speed_MHz){
@@ -30,6 +29,7 @@ static void init_I2C_pin(GPIO_t *GPIO, GPIO_Pin_t gpio_pin, GPIO_AFx_t alt_func_
     GPIO_set_moder(GPIO, gpio_pin, GPIO_MODE_ALT);
     GPIO_set_otyper(GPIO, gpio_pin, GPIO_TYPE_OPEN_DRAIN);
     GPIO_set_alt_func(GPIO, gpio_pin, alt_func_val);
+    GPIO_set_pupdr(GPIO, gpio_pin, PULL_UP);
 }
 
 /**
@@ -40,11 +40,13 @@ void I2C_init_engine(GPIO_t *GPIO, GPIO_Pin_t scl_pin, GPIO_Pin_t sda_pin,
 GPIO_AFx_t alt_func_val,  uint32_t clock_speed_MHz, uint32_t i2c_freq){
     // turn on peripheral clock
     I2C1_clock_on();
-
     // turn on sda and scl pins
     init_I2C_pin(GPIO, sda_pin, alt_func_val);
     init_I2C_pin(GPIO, scl_pin, alt_func_val);
-    
+
+    I2C_ENGINE->I2C_CR1 |= (1<<15);
+    I2C_ENGINE->I2C_CR1 &= ~(1<<15);
+
     // set up the engine
     uint32_t clock_speed_Hz = clock_speed_MHz*1000000;
     uint32_t ccr_val = (clock_speed_Hz)/(2*i2c_freq);
@@ -133,7 +135,7 @@ int I2C_write_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t value){
     } 
 
     I2C_ENGINE->I2C_CR1 |= I2C_STOP_GENERATION;
-
+    return TRUE;
 }
 int I2C_read_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t *read_val){
     int error = I2C_start_talking(peri_addr);
@@ -166,9 +168,9 @@ int I2C_read_reg(uint8_t peri_addr, uint8_t reg_addr, uint8_t *read_val){
     }
     
     I2C_ENGINE->I2C_CR1 &= ~I2C_CR1_ACK_EN;
+    I2C_clear_ADDR();
     I2C_ENGINE->I2C_CR1 |= I2C_STOP_GENERATION;
 
-    I2C_clear_ADDR();
     while(!(I2C_ENGINE->I2C_SR1 & I2C_SR1_RXE_FLAG)){
         if(I2C_ENGINE->I2C_SR1 & I2C_SR1_AF_FLAG){
             return FALSE;

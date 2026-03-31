@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "gpio.h"
-#include "rcc.h"
+#include "i2c.h"
 
 #define DAC_WRITE_ADDRESS 0x94
 #define DAC_READ_ADDRESS 0x95
@@ -61,17 +61,53 @@ void delay_ms(uint32_t ms){
 
 }
 
-void init_audio_chip(){
+void get_chip_id(uint8_t *ready_val){
     GPIO_set_moder(GPIOD, GPIO_PIN_4, GPIO_MODE_OUTPUT);
     GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_RESET);
     delay_ms(1);
     GPIO_set_bssr(GPIOD, GPIO_PIN_4, BSSR_SET);
-    
+    I2C_init_engine(GPIOB, GPIO_PIN_6, GPIO_PIN_9, AF4, 16, 100000);
+    I2C_read_reg(DAC_WRITE_ADDRESS, 0x01, ready_val);
 }
 
 int main(void) {
     init_clock_on();
     init_GPIOD();
-    init_audio_chip();
-    
+    uint8_t chip_id = 0;
+    get_chip_id(&chip_id);
+    if(chip_id == 0xE0){
+        while(1){
+            turn_green_on();
+            delay_ms(100);
+            turn_green_off();
+            delay_ms(100);
+        }
+    }else if(chip_id == 0xE1){
+        while(1){
+            turn_red_on();
+            delay_ms(100);
+            turn_red_off();
+            delay_ms(100);
+        }
+    } else if(chip_id == 0xE2){
+        while(1){
+            turn_green_on();
+            delay_ms(1000);
+            turn_green_off();
+            delay_ms(1000);
+        }
+    }else if(chip_id == 0xE3){
+        while(1){
+            turn_red_on();
+            delay_ms(1000);
+            turn_red_off();
+            delay_ms(1000);
+        }
+    }else{
+        while(1){
+            turn_red_on();
+        }
+    }
+
+
 }
